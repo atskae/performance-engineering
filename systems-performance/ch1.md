@@ -77,3 +77,41 @@ Two important perspectives in performance analysis:
 
 **Dynamic instrumentation**: adds instructions to a running program for tracing
 * Similar to debuggers inserting a breakpoint
+
+## 1.8 Experimentation
+* Benchmarking tools
+* Tools that generate synthetic workloads on a system measures the performance
+* **Macro-benchmarks** simulate a real-world workload
+* **Micro-benchmarks** test a specific component, such as CPU, disks, networks (ex. iperf TCP benchmark)
+    * Fixed inputs to rule out network/client variance
+* Best to start with observability tools on production systems first, then use experimental tools
+
+
+## 1.9 Cloud Computing
+* Can deploy new instances of compute on demand
+    * Can look into how to do more with less compute resources (cost-savings)
+* Look into performance effects by other tenants, *performance isolation*
+* System observability by each tentant
+
+
+## 1.10 Methodologies
+* **Methodology**: documented steps for performing a task in systems performance (as opposed to trying out random things)
+    * Example methodology: USE method
+* Linux perf anaylsis in 60 seconds - checklist
+
+Can use the following Linux commandline tools:
+
+| # | Tool | Usecase | Output | MacOS |
+| --- | --- | --- | --- | --- |
+| 1 | `uptime` | How long the system has been up, number of users, and **CPU load**: how many processes are actively using/waiting for the CPU (1, 5, and 15 minute averages). A 1-core system at 1.0 load is 100% load. A 4-core system at 4.0 load is at 100% load. | ```16:44  up 11 days,  1:28, 2 users, load averages: 3.18 2.89 3.84``` | |
+| 2 | `dmesg -T \| tail` | Shows the **kernel ring buffer**, which shows kernel log messages (ex. driver status, hardware errors) | | |
+| 3 | `vmstat -SM l` | **Virtual memory statistics** (ex. pages) | | `vm_stat` |
+| 4 | `mpstat -P ALL 1` | per-CPU balance | | `top -o cpu` |
+
+... TODO add the rest.
+
+## 1.11 Case Studies
+**Case study**: a real example going through various tasks to investigate a performance issue
+* When and why the tasks performed
+
+### 1.11.1 Slow Disks
