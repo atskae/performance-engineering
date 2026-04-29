@@ -115,3 +115,36 @@ Can use the following Linux commandline tools:
 * When and why the tasks performed
 
 ### 1.11.1 Slow Disks
+* User complained that the disks are slow on the database servers
+    * Not sure if slow disks is the cause of the issue on the databases
+
+First task is to create a problem statement and ask investigative questions:
+* How is database performance measured?
+* How long has this been an issue?
+* What changed recently?
+* Why does the database team think it is a disk issue?
+
+Database team says "we log if a disk access takes >1ms. This started happening recently."
+
+USE method - check for resource bottlenecks
+* Checks that disk utilization is high this past week, but CPU utilization is the same
+* Logs into the system and looks for disk errors
+* Can view stack traces of the database when it is scheduled off by the kernel using `offcputime`
+* Try to understand the workload
+    * Throughput, read/writes
+* Check file system cache with `cachestat`
+    * Higher cache miss rate than usual, which was caused by another project consuming production memory
+
+### 1.11.2 Software Change
+* A new software feature is released and we do not know the performance impact of it
+    * Can do **non-regression testing** - check if the software does *not* regress
+* Uses a client-workload simulator, getting usage examples from logs
+    * Has limitations
+* **Stress test** the backend - increase to limit of workload simulator
+    * Write a script to increase the workload over some increment (1000 client requests per second)
+    * Collect results for later plotting and analysis
+* Check if CPU utilization increases with the same workload
+* Investigate datapath: network, client system, client workload generator
+* Thread-state analysis: how many threads are used? Just one?
+* Create a CPU flame graph to understand why CPU utilization went up
+    * Can see which code paths contributed to increase utilization
