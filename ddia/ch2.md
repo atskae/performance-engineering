@@ -68,3 +68,27 @@ Metrics of the Twitter case study example:
     * Highly loaded system -> requests get *queued*, throughput goes down
     * If # of request reaches hardware max capacity, response time goes up significantly
     * See graph p37
+
+* Users care about response time
+* Throughput is related to how much computing resources are needed
+    * Ex) The cost of a workload is how many servers you need to handle that workload
+    * A system is *scalable* if the max throughput can increase by addeding more compute resources
+
+### When an Overloaded System Won't Recover
+* When the system is overloaded, queue is slow and throughput goes significantly down
+* Response times for users go up, which makes users retry their request, which increases the load
+    * **retry storm**: When retry requests overload the system
+* Might require a system reset to recover - **metastable failure**
+    * Causes a serious outage in prod
+* Ways to avoid a *retry storm*:
+    * Add random, longer waits in the client before retrying again, *exponential backoff*
+    * If the service is overloaded, the client can immediately return an error
+        * **circuit breaker**: detect a failure and prevent the failure from cascading to new failures
+        * **token bucket** algorithm: a way to keep a long-term constant rate of accepting requests
+            * Rate-limiting/controller
+            * Tokens keep track of how many requests the system can make
+            * Tokens accumulate at a fixed rate into a "bucket" - if the bucket is full, no more tokens are added
+            * A token is used when a system handles a request
+        * **load shedding**: proactively reject requests when the system is *close* to reach overload
+        * **backpressure**: notify the client to stop sending requests since the system is overloaded
+        * Explore load-balancing and queueing algorithms for different use-cases
