@@ -92,3 +92,25 @@ Metrics of the Twitter case study example:
         * **load shedding**: proactively reject requests when the system is *close* to reach overload
         * **backpressure**: notify the client to stop sending requests since the system is overloaded
         * Explore load-balancing and queueing algorithms for different use-cases
+
+## Scalability
+
+### Understanding Load
+
+Questions to ask about load:
+* What happens if our load doubles?
+* What is the peak load? (ex. maximum number of users online simultaneously)
+* Peak memory?
+* Throughput: requests/second, GB of memory used per day
+* Ratio of reads to writes
+* What is the average case? Extreme cases? Are we bottle-necked by the small, extreme cases?
+
+When increasing the load, two ways to look at it:
+* If load is increased, how much does performance get affected?
+* If load increased, how much resources do we need to add to keep performance the same?
+
+Two goals to reach:
+* Maintain the performance written in the SLA
+* Minimize cost of resources (CPUs, memory, network bandwidth)
+
+### Shared-Memory, Shared-Disk, and Shared-Nothing Architectures
