@@ -147,3 +147,39 @@ Cons of shared-nothing architecture:
 * Don't overcomplicate
     * If a single machine architecture is fine, don't spend time on a complicated distributed system
     * Autoscale systems might be overkill if the load is always predictable (manual load balancing might be better)
+
+## Maintainability
+* Maintanence costs more than the intial development phase
+    * Fixing bugs, handling new requirements, investigating failures, tech debt, keeping system up and running
+* Challenges of maintaining legacy systems:
+    * Uses outdated technologies (ex. COBOL)
+    * The people that made the original design decisions left the org
+    * Human organization problem too
+* Goal is the minimize the pain for future engineers who will take over the system:
+    * **Operability** Make is easy keep the system running
+    * **Simplicty** Don't overcomplicate the design, new engineers should be able to understand the architecture easily
+        * Use consistent patterns
+    * **Evolvability** Make it easy to make changes for use cases we can't forsee
+
+### Operability: Make Life Easy for Operations
+* Need automation to handle systems with thousands of machines
+    * But anomolies will occur and manual intervention will be needed
+    * Need a *more* skilled operations team to handle non-automatable errors that can be more complex
+        * [Ironies of Automation (1983)](https://ckrybus.com/static/papers/Bainbridge_1983_Automatica.pdf)
+* Full automation is not good - need to have a good balance
+
+### Simplicity: Managing Complexity
+* *Big ball of mud* - a software project that is overly complex in design, making maintenance hard
+* Simple systems are easier to understand and maintain, but not easy to come up with
+    * Also a subjective matter ([What is a Simple System? (2022)](https://brooker.co.za/blog/2022/05/03/simplicity.html))
+* *Abstraction* is a tool to maintain complexity
+    * Hide implementation details under a clean interface
+    * Design patterns, domain-driven design (DDD)
+
+### Evolvability: Making Change Easy
+* The system's requirements are always changing
+    * Ways to handle such environments: Agile workflow, test-driven development
+* Minimize *irreversibility*: unable to switch back to an old system if switching to the new system caused problems
+
+## Summary
+* Non-functional requirements: performance, reliability, scalability, maintainability
