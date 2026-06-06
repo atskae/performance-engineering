@@ -110,7 +110,40 @@ When increasing the load, two ways to look at it:
 * If load increased, how much resources do we need to add to keep performance the same?
 
 Two goals to reach:
-* Maintain the performance written in the SLA
+* Maintain the performance written in the SLA (Service Level Agreements)
 * Minimize cost of resources (CPUs, memory, network bandwidth)
 
 ### Shared-Memory, Shared-Disk, and Shared-Nothing Architectures
+* *Shared-memory architecture*: run on a single machine
+    * Takes advantage of threads of the same process being able to access the same RAM
+    * Twice the hardware resources actually costs more than twice the cost of a lower spec machine
+    * Usually unable to handle twice the load
+* *Shared-disk architecture* - use several independent CPUs and RAM, then data is stored among shared array of disks
+    * The CPUs share access to the disks
+    * Disks are connected with *network-attached storage* (NAS) or *storage-area network* (SAN)
+    * Contention/locking limits the scale of this architecture
+* Shared-nothing architecture* - separate nodes, each node has their own CPUs/RAM/disks, and interact with other nodes at the software level
+    * A distributed system
+    * Adding more nodes is called **horizontal scaling**, as opposed to **vertical scaling** (add more CPUs/RAM/disk to 1 machine/node)
+
+Pros of shared-nothing architecture:
+* Potential to scale linearly
+* Distributed across geography (if an outage in 1 cluster, other clusters are still up) - better fault tolerance
+* Easily add/remove compute resources/nodes when load changes
+
+Cons of shared-nothing architecture:
+* Complexity of distributed systems
+* Sharding
+
+### Principles for Scalability
+* Architecture of choice depends on the application (no 1 size fits all)
+* Different scenarios: 100k requests per second, each 1KB, has different needs than 3 requests per minute, each 2GB
+    * Both have same throughput: 100MB/sec
+* The same architecture might be ideal at some levels of load, but might need to be completely rethought for a different order of magnitude of load
+    * Experiment and evole the product over time - sometimes premature optimization before learning how the sysetm handles load is unproductive
+* Focus on what services can be run independently of each other (microservice architecture)
+    * Easier to scale
+    * But this requires knowledge on the balance of keeping services together / separately
+* Don't overcomplicate
+    * If a single machine architecture is fine, don't spend time on a complicated distributed system
+    * Autoscale systems might be overkill if the load is always predictable (manual load balancing might be better)
