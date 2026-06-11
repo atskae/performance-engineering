@@ -5,3 +5,4 @@ Notes from [Designing Data-Intensive Applications (2026)](https://www.oreilly.co
 ## Notes
 1. [Trade-Offs in Data Systems Architecture](./ch1.md)
 1. [Defining Non-Functional Requirements](./c2.md)
+1. [Data Models and Query Languages](./ch3.md)
