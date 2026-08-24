@@ -4,3 +4,4 @@ Notes from Systems Performance: Enterprise in the Cloud by [Brendan Gregg](https
 
 ## Contents
 * [Chapter 1: Introduction](./ch1.md)
+* [Chapter 2: Methodologies](./ch2.md)
