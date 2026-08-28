@@ -229,3 +229,162 @@ runtime = (hit rate * hit latency) + (miss rate * miss latency)
 * **Unknown-unknowns**: Don't know that we do not know.
     * Ex. No idea that device interrupts are causing huge slowdowns, but we don't observe them/unaware of them
 * The more we learn about systems, the more known-unknowns we learn about, and we can check them in our applications
+
+
+## 2.4 Perspectives
+Two common perspectives for performance analysis:
+* *Workload analysis* (top-down, relative to the figure below)
+* *Resource analysis* (bottom-up)
+
+Figure:
+```
+Workload
+  |
+  v
+Application
+  |    |
+  |    v
+  |  System Library
+  |
+  v
+System Calls
+  |
+  v
+Kernel
+  |
+  v
+Devices
+```
+
+### Resource Analysis
+* *Resource analysis*: analysis of system resources: CPU, memory, disks, network interface, buses, interconnects
+* *System administrators* look into whether the resources are a cause of performance issues, or for capacity planning for new systems
+* Metrics:
+    * IOPS
+    * Throughput
+    * Utilization
+    * Saturation
+    * Latency - given the workload, was is the latency of the resource to respond
+* CLI "stat" tools: `vmstat`, `iostat`, `mpstat`
+
+### Workload Analysis
+* *Workload analysis* studies the performance of applications
+* Look at workload applied and how the application responds
+```
+                       -------------
+Input (workload) ---> |             |
+                      |             |
+         Latency      | Application |
+                      |             |
+Completion <--------  --------------
+```
+* This analysis is done by the software developers of the application and those who configure it
+* Targets:
+    * **Requests**: the workload applied
+    * **Latency**: the response time of the application
+    * **Completion**: looking for errors
+
+* **Workload Characterization**: looking at the atttributes of the workload
+    * Database example attributes: client host, tables, query string
+    * Try to find unnecessary/unbalanced work
+    * Even if the system is performing with low latency, we still want to elimiate any unnecessary work: "The fastest query is the one you don't do at all"
+
+* Metrics for workload analysis:
+    * Throughput (transactions per second)
+    * Latency
+
+
+## 2.5 Methodology
+(big table of methodologies and anti-methodologies, p40)
+
+### Streetlight Anti-method
+Simply look around comfortable tools or random tools from the internet in hopes to find something obvious
+* Tuning random configurations in hope that something will reveal itself
+* Can easily overlook many issues
+* Even if this method reveals *an* issue, it may not find *the* issue
+    * And it's slow - there are faster, more smarter ways
+* *Streetlight effect*: we look for solutions at places that are easy to see, not where the truth actually is
+
+### Random Change Anti-method
+Change random parameters, then measure performance
+* If it was better than baseline, keep the new parameter
+* It is time-consuming and may not be an ideal configuration long-term
+
+### Blame-Someone-Else Anti-method
+* Find a component that you are not responsible for, then make *that* team do the performance analysis
+    * You only hypothesize the problem could be somewhere, then make another team do the work
+* If blamed, ask the requester for screenshots/tools/data pointing the problem to your team first
+* Don't waste other team's time on performance analysis without doing your own anaysis first
+
+### Ad Hoc Checklist Method
+* A checklist to find common peformance issues
+    * Ex) after a new deployment, run `iostat` -> `r_wait`
+* Remember to keep the checklist updated
+* Helps to have a documented checklist so everyone knows how to handle common issues
+
+### Problem Statement
+Define the problem statement by asking questions:
+* What makes you think there is a performance problem?
+* Has the system ever performed well?
+* What changed recently? SW? HW? Load?
+* Can the problem be expressed in terms of latency or runtime?
+* Does the problem affect other people or other application? (or just you?)
+* What is the environment? What SW/HW is used? Versions? Configurations?
+
+
+### Scientific Method
+Make a hypothesis and test it. The general steps:
+1. Question: the performance problem statement
+2. Hypothesis: what do I think is the cause of the performance issue
+3. Prediction: what I think will happen if I conduct the tests
+4. Test: perform the test
+    * *Observational test*: look at performance metrics of two different systems for comparison (ex. cache hit rate)
+    * *Experimental test*: make a change on the system (ex. increase cache size)
+5. Analysis: analyze the data collected from the tests
+
+Example problems/walkthroughs on p45
+
+* *Negative test*: intentionally hurting performance (ex. choose to reduce cache size) to learn more about the system
+
+### Diagnosis Cycle
+Iterative scientific method essentally:
+```
+hypothesis -> instrumentation -> data -> hypothesis
+```
+* Use when we can quickly get data on a new hypothesis and can iterate on a new hypothesis based on previous results
+
+### Tools Method
+A tools-oriented approach:
+* Make a list of available tools
+* List the metrics extracteed from each tool
+* Explain how each metric can be interpreted
+
+Can be prescriptive and the user is unaware that the available tools do not give a complete picture of the whole system
+
+### The USE Method
+* For every system resource, check the: **U**tilizaiton, **S**aturation, **E**rrors
+* Should be done early in performance analysis
+
+Terms:
+* **Resource**: physical server functional components (Ex. CPUs, buses)
+* **Utilization**: the percentage of time in a time range that the resource was busy servicing work
+    * Can still accept more work while doing work, until the resource becomes *saturated*
+    * *Capacity-based* (ex. how much memory was used in main memory)
+    * *Time-based* (how long was the resource busy)
+* **Saturation**: when the resource has extra work that it cannot service (ex. work waiting on the queue), also called *pressure*
+* **Errors**: error events
+
+* Contrast to the Tools method, the USE method iterates on system resources rather than performance tools
+    * Helps come up with the questions to ask, then use tools to target the analysis to more specific metrics
+
+**Procedure**
+1. Check for errors - easy to interpret and objective
+2. Check for saturation
+
+Can find *a* bottleneck out of many potential bottlenecks.
+
+**Expressing Metrics**
+Express the main metrics:
+* **Utilization**: percent over time interval (ex. *"1 CPU is running 90% utilization"*)
+* **Saturation**: as a wait-queue length (ex. *"The CPU has an average queue length of 4"*)
+* **Errors**: number of errors reported (ex. *"The disk drive has 50 errors"*)
