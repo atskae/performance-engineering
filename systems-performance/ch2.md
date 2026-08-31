@@ -378,13 +378,42 @@ Terms:
     * Helps come up with the questions to ask, then use tools to target the analysis to more specific metrics
 
 **Procedure**
-1. Check for errors - easy to interpret and objective
-2. Check for saturation
+First check for errors - easy to interpret and objective. Then check for saturation.
 
 Can find *a* bottleneck out of many potential bottlenecks.
+
+(see USE method flow, p48)
 
 **Expressing Metrics**
 Express the main metrics:
 * **Utilization**: percent over time interval (ex. *"1 CPU is running 90% utilization"*)
 * **Saturation**: as a wait-queue length (ex. *"The CPU has an average queue length of 4"*)
 * **Errors**: number of errors reported (ex. *"The disk drive has 50 errors"*)
+
+* Possible to have bursts of short but high utilization, even if utilization over a longer period of time is lower
+    * These short, high bursts can cause saturation on a system
+    * Ex) toll booth is at 100% utilization when there are no more empty booths and cars need to start waiting in a queue (saturation)
+        * The daily average utilization could be 40% but this does not reflect when/if saturation was reached within a day
+
+**Resource list**
+First step in the USE method: create a list of resources.
+
+For example:
+* **CPUs**: sockets, cores, hardware threads (virtual CPUs)
+* **Main memory**: DRAM
+* **Network interfaces**: Ethernet ports, Infiniband (networking standard used in HPC)
+* **Storage devices**: Disks
+* **Accelerators**: GPUs, TPUs FPGAs
+* **Controllers**: Storage, network
+* **Interconnects**: CPU, memory, I/O
+
+Many types of resources:
+* **Capacity resource**: main memory
+* **I/O resource**: network interfaces (IOPS, throughput)
+    * Also can be seen as a *queueing system*: resources that queue and then service these requests
+* Both Capacity and I/O resource: storage device
+
+Focus on resources that suffer under high utilization and saturation (for example, can keep hardware caches out of the resource list, since these caches are used to *improve* performance). In doubt, investigate the resource and see for yourself.
+
+**Functional Block Diagram**
+Draw a *functional block diagram* of the resources and their relationships with each other (see p50 for an example).
