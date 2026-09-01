@@ -476,3 +476,17 @@ The RED method defines three metrics defined from the user perspective. For ever
 * **R**equest rate: the number of service requests per second
 * **E**rrors: the number of requests that failed
 * **D**uration: the time for a request to complete
+
+Performance engineer task:
+* Draw architecture diagram of all thes services
+* Ensure the three RED method metrics are monitored for each service
+
+The RED method was created by [Tom Wilkie](https://grafana.com/blog/the-red-method-how-to-instrument-your-services/), who implemented the RED and USE methods for the monitoring system [Prometheus](https://grafana.com/docs/grafana/latest/fundamentals/getting-started/first-dashboards/get-started-grafana-prometheus/) at Grafana.
+* USE method for machine health
+* RED method for user health
+
+The *request rate* can reveal if the problem is with the software architecture or the workload.
+* Steady request rate but increased request duration: architecture issue
+* Both increase: workload issue, workload characterization needed
+
+#### Workload Characterization
