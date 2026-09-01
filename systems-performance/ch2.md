@@ -395,7 +395,7 @@ Express the main metrics:
     * Ex) toll booth is at 100% utilization when there are no more empty booths and cars need to start waiting in a queue (saturation)
         * The daily average utilization could be 40% but this does not reflect when/if saturation was reached within a day
 
-**Resource list**
+#### Resource list
 First step in the USE method: create a list of resources.
 
 For example:
@@ -415,5 +415,64 @@ Many types of resources:
 
 Focus on resources that suffer under high utilization and saturation (for example, can keep hardware caches out of the resource list, since these caches are used to *improve* performance). In doubt, investigate the resource and see for yourself.
 
-**Functional Block Diagram**
+#### Functional Block Diagram
 Draw a *functional block diagram* of the resources and their relationships with each other (see p50 for an example).
+
+#### Metrics
+For each resource, check: utilization, saturation, errors
+* And metrics that capture those
+
+Example table:
+| Resource | Type | Metric |
+| - | - | - |
+| CPU | Utilization | CPU utilization (per CPU or system-wide average) |
+| CPU | Saturation | Run queue length, scheduler latency |
+| Memory | Utilization | available free memory |
+| Memory | Saturation | Out of memory events, swapping |
+| Network interface | Receive throughput / max bandwidth |
+| Storage I/O | Utilization | Device busy % |
+| Storage I/O | Saturation | Wait queue length |
+| Storage I/O | Errors | Device errors |
+
+See p51 for advanced USE metrics (harder to capture)
+See Appendix A for USE method checklist for Linux
+
+#### Software resources
+* Locks, mutexes
+    * Queued threads waiting for the lock
+* Threadpools, processes, threads
+    * Reaching maximum number of threads/processes
+    * Errors "cannot fork"
+
+#### Suggested Interpretations
+* 100% utilization is usually a sign of a bottleneck
+    * ~60% utilization can start to see queueing delays
+        * Short busts of 100% utilization can be hidden in the average, so look closely
+* Saturation, look at queue lengths over time
+* Errors, increasing error counters
+
+It is also worth confirming that utilization, saturation, and errors are low, then it could be possible to eliminate the problem as a *resource* problem and look elsewhere.
+
+#### Resource Controls
+**Software resource controls** on cloud computing and container environments to limit the resource use of each tenant on the system
+* Ex) limit CPU/memory usage per tenant/application
+* On Linux, `cgroups` are used to configure limits for resources
+
+#### Microservices
+* Can be a lot of metrics impossible to look through all manually
+
+Example USE metrics for a Netflix microservice:
+* **Utilization**: average CPU utilization across a cluster
+* **Saturation**: look at 99th percentile latency (assume this is the point of saturation) vs. average latency
+* **Errors**: request errors
+
+[Netflix's Atlas cloude-wide monitoring tool](https://netflix.github.io/atlas-docs/overview/) observes these three metrics for each microservice at Netflix.
+
+
+### The RED method
+The USE method focuses on resources. The **RED method** focuses on services (cloud services in a microservice architecture).
+
+The RED method defines three metrics defined from the user perspective. For every service, check the:
+* **R**equest rate: the number of service requests per second
+* **E**rrors: the number of requests that failed
+* **D**uration: the time for a request to complete
