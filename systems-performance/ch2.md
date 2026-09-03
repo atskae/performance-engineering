@@ -489,4 +489,60 @@ The *request rate* can reveal if the problem is with the software architecture o
 * Steady request rate but increased request duration: architecture issue
 * Both increase: workload issue, workload characterization needed
 
-#### Workload Characterization
+### Workload Characterization
+**Workload characterization** tries to find the issues of the work applied to the system
+* Focuses on the *input* to the system, rather than the resulting performance
+
+Characterize workload by asking:
+* **Who** is causing the load? A process? User? Remote IP?
+* **Why** is the load applied?
+* **What** are the load characteristics?
+    * IOPS, throughput, reads/writes
+    * Track variance (how far metrics are from the average/mean) and standard deviation (`sqrt(variance)`) when appropriate
+        * Low variance - data is close to the mean
+* **How** is the load changing over time? Daily patterns?
+
+Always best to check metrics, even if you are confident in what to expect - there can always be surprises.
+* Ex) You'd expect the only clients to a database app are web servers, turns out the the database is open to the whole internet and under a Distributed Denial-of-Service attack
+
+Look for ways to eliminate *unnecessary work*, examples:
+* Thread stuck in a loop, wasting CPU cycles
+* Doing too many backups during peak hours
+
+To **throttle** means to intentionally slow down speed/performance
+* If the workload cannot be eliminated, can *throttle* the system using Resource Controls
+    * Ex) Slow down backups so the production database is not overwhelmed during peak hours
+
+Can use workload characterization to design **simulation benchmarks**
+* Can use metrics like varianace/standard deviation of the workload to simulate all types of workloads (not just the average workload)
+* See Chapter 12 on Benchmarking
+
+Distinguishes load vs. architecture issues.
+
+### Drill-down Analysis
+**Drill-down Analysis** methodology starts with high-level metrics then digs deeper into software components that are relevant and eliminate areas that are uninteresting:
+1. **Monitoring**: observe high-level statistics of the system over time, alerting if an issue occurs
+    * Observability dashboard of all servers/cloud instances
+    * **Simple Network Monitoring/Management Protocol** (SNMP) - historial tool to monitor devices attached to a network
+    * *Exporters* are agents that run on a system and collect system metrics over-time, metrics to be viewed in a frontend/graphical interface
+    * Find long-term behaviors over time
+2. **Identification**: Narrow the issue to a specific resource or area of interest, identify the bottlenecks
+    * Go onto the server directly and check system components: CPUs, disks, memory
+    * Can use CLI tools (`vmstat`, `iostat`, etc) but can also use GUIs that already expose those metrics for faster analysis
+3. **Analysis**: Further examination, find root-cause and quantify the issue
+    * Look through traces
+    * Inspection of source code
+
+Netflix cloud example going through the drill-down methodology:
+1. **Monitoring**: Look at Netflix Atlas, open-source cloud monitoring tool
+1. **Identification**: Netflix perfdash - see the USE metrics of a single instance on a dashboard
+1. **Analysis**: Netflix FlameCommander - create flame graphs, CLI tools over SSH (ex. `ftrace`-based tools)
+    * Find where in the code that consumes a resource
+
+### Five Whys
+Can keep asking yourself ["Why?" 5+ times](https://en.wikipedia.org/wiki/Five_whys) to see if that reveals anything. Example:
+1. The database began to perform poorly. Why?
+1. Delayed due to disk I/O and paging. Why?
+1. Database memory increased too much. Why?
+1. Allocator is consuming more memory than usual. Why?
+1. Allocator has memory fragmentation issue.
