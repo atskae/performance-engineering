@@ -546,3 +546,23 @@ Can keep asking yourself ["Why?" 5+ times](https://en.wikipedia.org/wiki/Five_wh
 1. Database memory increased too much. Why?
 1. Allocator is consuming more memory than usual. Why?
 1. Allocator has memory fragmentation issue.
+
+
+### Latency Analysis
+**Latency analysis**: look at how long it takes for an operation to complete, then break this down into sub-components of where time is being spent
+* Drill down through the software stack
+```
+|------------- Operation ---------------------------|
+Latency(op) = Latency(A) + Latency(B) + ...
+```
+
+### Method R
+Latency anaylsis on database queries
+
+### Event Tracing
+Systems operate by processing discrete events (ex. CPU instructions, disk I/O network packets):
+* Might be necessary to dig deeper into these discrete events if the *summary* of these events (ex. ops/sec, bytes/sec, average latency) don't reveal enough
+* Ex) network troubleshooting might require inspecting individual network packets `tcpdump`
+* Ex) Storage device I/O `biosnoop`
+* Ex) system call layer, tracing `strace`/`perf` on Linux
+* **Latency outlier**: the high latency is caused by events before it, but not the event itself (ex. queueing)
