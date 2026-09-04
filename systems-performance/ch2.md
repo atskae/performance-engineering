@@ -566,3 +566,64 @@ Systems operate by processing discrete events (ex. CPU instructions, disk I/O ne
 * Ex) Storage device I/O `biosnoop`
 * Ex) system call layer, tracing `strace`/`perf` on Linux
 * **Latency outlier**: the high latency is caused by events before it, but not the event itself (ex. queueing)
+
+
+### Baseline Statistics
+
+Line graph, with x-axis as time.
+* Can also graph this week's data and last week's data in the same line graph, to compare Tuesday with last week Tuesday at the same time
+
+But there are other metrics collected at the command line that are not monitored
+* *Baseline statistics* can be collected on a periodic schedule on a system
+
+### Static Performance Turning
+*Static performance turning*: look at how the architecture is configured
+* As opposed to *dynamic performance*: the system when load is applied
+
+Go through all the components in the system and ask:
+* Is this still needed?
+* Does the config make sense for the intended workload?
+    * Ex. OS/firmware versions, network config (1 Gbits/s instead of 10Gbits/s)
+    * Ex. Using a remote server for authentication vs. local server
+* Any errors that resulted in a degraded state?
+    * Ex. file system is full
+    * Costly debug-mode accidentally left on
+
+Easy to check, hard to remember to do them!
+
+### Cache Tuning
+* Aim to cache closest to the workload as possible
+* Metrics: hit/miss rate
+* Look for *double caching*: two caches consuming main memory but caching the same data
+
+### Micro-Benchmarking
+**Micro-benchmarking** test the performance of simpler/artificial workloads
+* As opposed to **macro-benchmarking** (or *industry benchmarking*) which tries to test real-world workloads
+    * Can be more complex to understand
+
+Examples of micro-benchmarks:
+* Linux `iperf`: TCP throughput test to catch networking bottlenecks
+
+*Load generators* just generate small workloads (rely on other tools to capture metrics)
+* *Micro-benchmarking tools* do both generate workload and compute metrics
+
+Example targets of micro-benchmarks:
+* System call time
+* File system reads
+
+* Conduct target operations quickly and computes the average time for each operation:
+```
+average_time = total_runtime / number_of_operations
+```
+
+### Performance Mantras
+Tuning methodology on how best to improve performance, from most to least effective:
+1. Don't do it: eliminate unnecessary work
+1. Do it, but don't do it again: caching
+1. Do it less: reduce polling, updates, refreshes
+1. Do it later: write-back caching (cache writes, then write to slow-memory later)
+1. Do it when they're not looking: schedule work to run during off-peak hours
+1. Do it concurrently: single to multi-threade3d
+1. Do it cheaply: Buy faster HW
+
+[Scott Emmons](https://netflixtechblog.com/a-microscope-on-microservices-923b906103f4) at Netflix
