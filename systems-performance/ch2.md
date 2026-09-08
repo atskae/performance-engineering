@@ -627,3 +627,40 @@ Tuning methodology on how best to improve performance, from most to least effect
 1. Do it cheaply: Buy faster HW
 
 [Scott Emmons](https://netflixtechblog.com/a-microscope-on-microservices-923b906103f4) at Netflix
+
+
+## 2.6 Modeling
+Many reasons to do *analytical modeling*:
+* **Scalability analysis**: observing how performance scales as load or resources increase
+    * Resources can be both hardware (ex CPU cores) or software (processes, threads)
+
+Three main performance evaluation activities:
+* Analytical modeling (scalability analysis)
+    * Find when the performance stops scaling linearly and reaches a *knee point*: contention and performance degredation
+* Observability of the production system (measurement)
+    * Characterize load and resulting performance
+* Experimental testing (simulation)
+    * If the target production workload does not exist yet (not seen in production)
+
+### Enterprise vs. Cloud
+* With cloud computing, can re-create a production system and test there for the duration of a benchmark test
+* Can re-create different production environments
+
+### Visual Identification
+* Can plot results and visually find where the knee point is
+* ex. graph threads vs. throughput, and see when the slope starts to flatten (p.63)
+    * Can see if the CPU core count and the number of hardware threads per core is related to the knee point
+    * Test on different systems with different number of CPU cores to confirm a hypothesis
+
+**Scalabilility profiles** are metrics plotted visually to observe changes to the system. The x-axis is the scalability dimension (listed below) and the y-axis is the resulting performance (throughput, transactions per second, etc.). Imporant scalability profiles to consider:
+* **Linear scalability**: Performance increases proportionally as resources scales
+    * Want to see at what point does the performance increase slows down
+* **Contention**: Some shared resources can only be used serially
+    * Too much contention can reduce the effectiveness of scaling
+* **Cohherence**: Data coherence - keep track of data changes across the system, doing this at large scale mind outweigh the benefits of scaling
+* **Knee point**: The point at which the scalability profile changes
+* **Scalability ceiling**: A hard limit is reached (ex. reaching maximum throughput of a hardware resource or limits configured from resource control)
+
+See p64 for example visual plots of the scalability profiles.
+
+In addition to visual identification, mathematical models can be used.
