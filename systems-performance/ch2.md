@@ -664,3 +664,41 @@ Three main performance evaluation activities:
 See p64 for example visual plots of the scalability profiles.
 
 In addition to visual identification, mathematical models can be used.
+
+
+### Amdahl's Law of Scalability
+Computer architect Gene Amdahl proposed a formula to model system scalability:
+* The model takes into account serial components that cannot be scaled in parallel.
+* Used to studying the scaling of CPUs, threads, workloads
+
+The model tries to measure contention on the serial resource:
+```
+C(N) = N / α(N - 1)
+```
+* `C(N)`: relative capacity
+* `N`: scaling dimension (ex. CPU count, user load)
+* `α` "Amdahl parameter" (where `0 <= α <= 1`): the degree of seriality
+    * How it deviates from linear scalability
+
+Steps to apply Amdahl's Law of Scalability:
+1. Collect data to compute the range for the scaling dimension `N` of the system
+    * Can use micro-benchmarking, load generators
+2. Perform *regression analysis*, statistical method to estimate the relationship of a dependent variable with selected independent variables, to compute `α`
+    * Can use statistical software (gnuplot, R)
+3. Plot the data points visually to predict scaling
+    * Find differences between data and model
+    * Can also use gnuplot or R
+
+### Universal Scalability Law
+The **Universal Scalability Law** (USL), "super-serial model", developed by Dr. Neil Gunther
+* Adds a parameter to include *coherence delay*
+
+USL is defined as:
+```
+C(N) =  N / (1 + α(N - 1) + βN(N - 1) )
+```
+* `β`: coherence parameter
+    * When `β == 0`, USL becomes the same as Amdahl's Law of Scalability
+* Other variables are the same as Amdahl's Law of Scalability
+
+Can plot both Amdahl's Law of Scalability and USL (see p66).
