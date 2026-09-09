@@ -702,3 +702,90 @@ C(N) =  N / (1 + α(N - 1) + βN(N - 1) )
 * Other variables are the same as Amdahl's Law of Scalability
 
 Can plot both Amdahl's Law of Scalability and USL (see p66).
+
+
+### Queueing Theory
+**Queueing theory** (invented by Danish mathematician Agner Krarup Erlang ~1909) is the mathematical study of systems with queues
+* Ways to analyze queue length, wait time (latency), utilization (time-based)
+* Many SW and HW components can be modeled as *queueing systems*
+    * Multiple queueing systems can form a *queueing network*
+* Uses mathematics, statistics, probability to model queueing systems
+* Erlang's C formula - calculates the probability that a caller must wait to reach an agent on the phone, given the number of agents and the traffic of calls
+* Little's Law (John Little, was an operations researcher at MIT) - computes the average number of items/tasks in a system `L`:
+    ```
+    L = λ * W
+    ```
+    * `λ`: task arrival rate
+    * `W`: the time it takes for a task to go through the entire system
+    * Can be applied to a queue
+
+Queueing systems can help answer questions such as:
+* What happens to the mean response time when:
+    * the load doubles?
+    * an additional processor is added?
+* Can we reach a 90th percentile response time <100ms if the load doubles?
+* Utilization
+* Queue lengths
+* Number of jobs over time
+
+Simple queueing model:
+```
+                           Queueing System
+                ______________________________________
+ Arrivals ---> |  Queue | | |  ----> Service Center   | ----> Departures
+               ---------------------------------------
+               |---wait time -|     |--service time --|
+```
+
+* Can have multiple service centers, also called *servers*, working in parallel
+
+Can categorize queueing systems in three categories:
+* **Arrival process*: arrival times to the queueing system, which can be random, fixed, Poisson (exponential distribution for arrival time)
+* **Service time distribution**: service time of the *servers*/service center, can be fixed (deterministic), exponential, or other distribution types
+* **Number of service centers**: one or many
+
+
+#### Kendall's Notation
+Queueing systems can be categorized and expressed in **Kendall's Notation** (by English mathematician and statistician David Kendall):
+```
+A/S/m
+```
+* `A`: arrival process
+* `S`: service time distribution
+* `m`: number of service centers
+* Other variations of Kendall's notation adds: number of buffers in the system, population size, service discipline
+
+Examples of commonly studied queueing systems:
+* `M/M/1`: Markovian arrival times (exponential distributed), Markovian service times, one service center
+* `M/M/c`: same as `M/M/1` but with multiple servers
+* `M/G/1`: Markovian arrivals, general distribution of service times (any), one service center
+* `M/D/1`: Markovian arrivals, deterministic service times (fixed), one service center
+
+`M/G/1` is commonly used to study the performance of rotational hardware disks.
+
+**Markov property**: future events only depend on the present state and not the past states before the present, also called "memoryless"/M in Kendall's Notation
+* In queueing theory, having a *Markovian arrival rate* means each task arrives at random and the arrival rate of a single task is not influenced by the past tasks that came before
+* *Exponential inter-arrival time*: short gaps between tasks happen more frequently, long gaps happen less frequently but still occur
+
+#### `M/D/1` and 60% Utilization
+A walkthrough of a simple example of a hard disk which follows the queueing model `M/D/1`, which means:
+* has Markovian arrival times
+* deterministic service times (this is obviously a simplification)
+* 1 server
+
+Question: how does the disk's response time vary as its utilization increases?
+
+In queueing theory, the response time of a queueing system `M/D/1` can be computed as:
+```
+r = s(2 - p) / 2(p - 1)
+```
+* `r`: response time
+* `s`: service time
+* `p`: utilization
+
+This formula can be graphed, for example, with service time `s` = 1ms and for utilization from 0% to 100% (see p68)
+* Single service queue, constant service times (`M/D/1`)
+* This can be plotted using R/gnuplot
+* Can see where the response time quickly doubles, then triples
+* Disk utilization can become a problem earlier before reaching 100% utilization
+    * CPUs can pre-empt tasks for more important tasks, as opposed to hard disks, where all tasks must be queued
