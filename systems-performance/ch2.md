@@ -789,3 +789,42 @@ This formula can be graphed, for example, with service time `s` = 1ms and for ut
 * Can see where the response time quickly doubles, then triples
 * Disk utilization can become a problem earlier before reaching 100% utilization
     * CPUs can pre-empt tasks for more important tasks, as opposed to hard disks, where all tasks must be queued
+
+
+### 2.7 Capacity Planning
+**Capacity planning**: examines how the system will scale as load increases
+* Many ways to do capacity planning: modeling (described in previous section), looking at resource limits, factor analysis
+* Solutions for scaling: load balancers, sharding
+* A whole book on this topic: [The Art of Capacity Planning](https://dl.acm.org/doi/book/10.5555/3181173) (2017)
+
+
+#### Resource Limits
+Look for the resource that will become a bottleneck under load
+* ex. a container reaches its resource limit configured by SW and becomes a bottleneck
+
+Steps for resource limits method, measure and continuously monitor:
+1. The rate of server requests over time
+2. HW and SW resource usage
+3. Express server requests in terms of resources used
+4. Extrapolate server requests to known limits for each resource
+
+First identify the type of requests that the server serves
+* Web servers serve HTTP requests
+* Network File System (NFS) serves NFS protocol requests
+* Database serves query requests
+
+Then compute the resource consumption per request
+* Look at rate of requests and the resource utilization
+* Can extrapolate to see which resource will hit 100% utilization first
+* Future systems can use micro-benchmarks or load generation tools to compute these metrics
+    * Existing systems can use actual client load / experimentally
+
+Resources to monitor:
+* **Hardware**: CPU utilization, memory usage, disk IOPS, disk throughput, disk capacity (volume used), network throughput
+* **Software**: Virtual memory usage, processes/tasks/threads, file descriptors
+
+Example walkthrough:
+* We have a system that has a request rate of 1,000 requests per second
+* Busiest resources are the 16 CPUs, with an average utilization of 40%
+    * We predict that at 100% utilization we will encounter a bottleneck
+* *What will be the request rate when CPU utilization is at 100%?*
