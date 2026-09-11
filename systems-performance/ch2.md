@@ -828,3 +828,70 @@ Example walkthrough:
 * Busiest resources are the 16 CPUs, with an average utilization of 40%
     * We predict that at 100% utilization we will encounter a bottleneck
 * *What will be the request rate when CPU utilization is at 100%?*
+
+What percentage of CPU does each request take?
+```
+16 CPUs * 40% / 1,000 requests = 16 * 0.40 / 1000 = 0.0064 = 0.64% CPU per request
+```
+
+Given 0.64% CPU per request, what is the request rate at 100% CPU utilization?
+```
+16 CPUs * 100% / x = 0.64% CPU per request
+0.0064 * x = 16 * 1.0
+0.0064 * x = 16
+x = 2,500 requests per second
+```
+
+Of course, this is a rough estimate and other factors can contribute to the limiting factor before reaching this request rate.
+
+We can also plot CPU utilization vs. throughput (request rate, requests/sec) with real data on a plot and extrapolate beyond a utilization % we haven't seen yet (see p71). We can then estimate the maximum possible throughput and improve our estimates over time with real data.
+
+Given maximum throughput of 2,500 requests per second, we also need to ask *is this enough?*
+* Need to understand peak workloads
+* Sometimes peak workloads happen at various times (ex. new feature launch)
+
+
+#### Factor Analysis
+* Performance goal: achieve required performance for the minimum cost (in resources)
+* Many factors to achieve this target performance
+    * Varying number of disks/CPUs, RAM, RAID configs, etc.
+
+Cannot test every possible combination of resources. One approach is to start with the maximum system configuration:
+1. Test performance with the maximum resource limit(?)
+2. Slowly reduce capacity of selected resources once by one - each change would degrade performance.
+    * Keep track of this performance degredation as a percentage of peak performance from Step 1
+3. Calculate the cost savings from reducing resource capacity
+4. Compare with peak performance cost vs. reduced performance cost, try to maintain the required requests/sec of the system.
+5. Retest delivered performance based on new resource configuration and compare the experimental performance with the calculated/predicted performance
+
+**Example**: We have a new storage system with performance requirements:
+* 1 GB/sec read throughput
+* 200 GB **working set size**: the amount of actively used memory, frequently used within a time window
+    * Ex. Device can be allocated 100 GB of memory but only ever work with 50 GB of memory on an active operation - 50GB is the *working set size*
+
+The maximum configuration achieves:
+* 2 GB/sec read throughput
+* 4 processors
+* 256 GB DRAM
+* Two dual-port 10 GbE (Gigabit ethernet) **network cards**: also called a *network interface controller (NIC)*, HW that connects a computer device to a computer network
+* Supports **jumbo frames**: network packets that are larger than the standard network packet size of 1,500 bytes
+* No compression/encryption is enabled (costly to activate)
+
+Let's say we experimentally reduce each resource and observed the following performance drops:
+| Resource/Config Change | Performance Drop of Read Throughput |
+| - | - |
+| 4 processors to 2 | 30% |
+| 2 network cards to 1 | 25% |
+| Disable jumbo frames | 35% |
+| Enable encryption | 10% |
+| Enable compression | 40% |
+| Use less DRAM (less caching) | 90% |
+
+With these metrics, we can calculate a configuration that reduces cost but still meets the performance requirements.
+
+For example, what is the throughput of the system reduced 2 processors with 1 network card?
+```
+2 processors * (1 - 0.30) * 1 network card * (1 - 0.25) = 1.05 GB/sec estimated
+```
+1.05 GB/sec meets the performance requirement of 1 GB/sec read throughput.
+* Always validate the theoretical/calculated metrics experimentally and see how it compares
