@@ -912,3 +912,41 @@ For example, what is the throughput of the system reduced 2 processors with 1 ne
     * Data is split into logical components, each component is stored and maintained independently (across redundant sets of databases)
     * ex. Customer data, split data by a range of customer names alphabetically
     * ex. choosing the sharding key affects the spread of load across databases
+
+
+## 2.8 Statistics
+* Important to know how to quantify performance issues using statistics (metrics) such as averages, standard deviations, and percentiles.
+
+### Quantifying Performance Gains
+* Helps us compare and prioritze performance issues
+* Can quantify performance issues by *observation* or *experimentally*
+
+#### Observation-based
+1. Choose a *reliable* performance metric
+1. Estimate the performance gains from resolving that issue
+
+Example:
+* Observed: application request takes 10ms, of that, 9ms is disk I/O
+* Try caching I/O memory, expected DRAM (main memory) latency of 10 microseconds (μs)
+* Estimated gains:
+    ```
+    10ms -> 1.01 ms (10ms - 9ms + 10μs)
+    speedup = old time / new time =  10ms / 1.01ms = ~9.9x gain
+    ```
+* When observing latency, track synchronous requestst that affect applcation performance (ex. asynchronous flushes to disk that don't effect the exection path should not be counted in the application latency calcuation)
+
+
+#### Experimentation-based
+1. Apply fix
+1. Quantify before and after using a reliable metric
+
+Example:
+* Observed: application transaction latency average is 10ms
+* Experiment: increase thread count to increase concurrency and decrease queueing
+* Observed: latency average becomes 2ms
+* Gain:
+```
+10ms -> 2ms
+speedup = 10ms / 2ms = 5x gain
+```
+If the fix is expensive to apply in production, use the Observation-based method instead.
