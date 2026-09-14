@@ -950,3 +950,47 @@ Example:
 speedup = 10ms / 2ms = 5x gain
 ```
 If the fix is expensive to apply in production, use the Observation-based method instead.
+
+### Averages
+An **average** represents the central tendency of a dataset with a single value
+* Many types of averages, a common one is the *arithmetic mean* (mean), which is the total sum of the values divided by the number of values
+* The [Pythagorean means](https://en.wikipedia.org/wiki/Pythagorean_means) are: arithmetic, geometric, and harmonic
+
+#### Geometric Mean
+The **geometric mean** of n values is multiplying all the values and taking the nth root of the product of the values:
+```
+nth_root(v0 * v1 * ... v_n-1)
+```
+
+Used to compute [average growth rates over time](https://www.mathsisfun.com/numbers/geometric-mean.html)
+* ex. 10% growth in year 1 and 60% growth in year 2
+    ```
+    geometric_mean  = nth_root(1.10 * 1.60)
+                    = sqrt(1.10 * 1.60)
+                    = 1.326...
+                    = ~32.6% averge growth rate
+    ```
+    * The arithmetic mean would actually be incorrect here!
+* Anything that compounds and grows: rates, percentages, investments
+
+Useful to compare items with different properties
+* ex. two cameras: 200 zoom and 8 product reviews, and 250 zoom and 6 reviews
+    * Arithmetic mean: (200 + 8)/2 = 104, (250 + 6)/2 = 128
+        * Zoom value overpowers the review count
+    * Geometric mean: sqrt(200 * 8) = 40, sqrt(250 * 6) = 38.7
+        * The lower review count has an impact
+
+Relevant to performance:
+* Ex. compute the average performance of a network stack
+    * Each layer in the stack has a "multiplicative" effect, which is reflected in the geometric mean
+* Anything with multiplicative scaling (ex. speedup)
+    * Arithmetic mean would treat each value equally, which is not what we want here
+
+#### Harmonic Mean
+The **harmonic mean** is the count of values divided by the sum of the values' reciprocals
+* Used when comparing rates
+
+With n values, the harmonic mean is:
+```
+n / (1/x1 + 1/x2 + ... 1/xn)
+```
