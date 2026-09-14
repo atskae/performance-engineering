@@ -895,3 +895,20 @@ For example, what is the throughput of the system reduced 2 processors with 1 ne
 ```
 1.05 GB/sec meets the performance requirement of 1 GB/sec read throughput.
 * Always validate the theoretical/calculated metrics experimentally and see how it compares
+
+#### Scaling Solutions
+* **Vertical scaling** (scaling up): taking the existing systems and making them bigger/stronger
+    * ex. add more CPU, RAM
+* **Horizontal scaling** (scaling out): adding more machines/servers to spread the workload
+    * ex. fronted by *load balancers*
+    * ex. clouding computing using smaller *virtualized* systems
+
+* Some systems can autoscale cloud given a performance metric (ex. AWS *auto scale group* (ASG))
+    * ex. create a scaling policy given usage, increase/decrease the number of instances
+    * ex. set utilization target to X%, and the auto-scale with try to maintain that utilization
+* Container orchestrations systems can also autoscale
+    * ex. Kubernetes provide horizontal scaling by launching more pods when a configured metric is met, *horizontal pod autoscalers* (HPAs)
+* Databases use *sharding* to scale
+    * Data is split into logical components, each component is stored and maintained independently (across redundant sets of databases)
+    * ex. Customer data, split data by a range of customer names alphabetically
+    * ex. choosing the sharding key affects the spread of load across databases
