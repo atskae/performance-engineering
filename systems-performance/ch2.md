@@ -1018,4 +1018,37 @@ A **decayed average** weighs values more recently in time higher than values in 
 
 #### Limitations
 * Averages are a *summary* statistic - details are lost/hidden
-* Can use other metrics in addition to average to get a better understanding of the system's performance (ex. standard deviation, percentiles, medians, visualizations)
+* Best to compute other metrics in addition to average to get a better understanding of the system's performance (ex. standard deviation, percentiles, medians, visualizations)
+
+
+### Standard Deviation, Percentiles, Medians
+The average represents the index of central tendency of the data. Standard deviations and percentiles describe the *distribution* of the data.
+
+* The **standard deviation** measures *variance*, how spread out the data is from the arithmetic average (mean)
+    * Low standard deviation value indicates that the values are close to the mean
+    * High standard deviation indcates the data is more spread out and further from the mean
+* The 99th *percentile* shows the point in the distribution that includes 99% of the values
+    * The 50th percentile is equivalent to the *median*
+
+
+### Coefficient of Variation
+Can only understand the variance of the dataset with both the standard deviation and the arithmetic average (mean) of the dataset.
+* The **coefficient of variation** (CoV, CV) is the ratio of the standard deviation to the mean
+    * Lower CV values mean less variance
+* The **z-value** computes the number of standard deviations a value is from the mean
+
+
+### Multimodal Distributions
+* A limitation of standard deviation, mean, and percentiles is they assume a *unimodal distribution*, which is a distribution with one clear peak (ex. the normal distribution)
+* System performance is often *bi-modal* (having two clear peaks) or multi-modal
+    * The average (mean) can be misleading in multi-modal distributions (see p76) since outliers and peaks can get hidden in the average
+    * *"Then there was the man who drowned crossing a stream with an average depth of six inches"* - W.I.E Gates
+* When an average is presented, always ask "what is the distribution of the data?"
+
+### Outliers
+* **Outliers** are data points of extremely high or extremely low values that occur less frequently than the other data points that more closely follow the distribution
+* Ex. disk I/O can have a latency of 1,000ms, when the majority is 0ms - 10ms
+* Can be hard to detect outliers
+* Outliers can shift the mean, but not the median
+* Standard deviation and percentiles have a better chance at finding outliers, but still depend on the outlier's frequency
+* Use histograms and other visualizations to better understand outliers
