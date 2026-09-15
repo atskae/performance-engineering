@@ -1052,3 +1052,21 @@ Can only understand the variance of the dataset with both the standard deviation
 * Outliers can shift the mean, but not the median
 * Standard deviation and percentiles have a better chance at finding outliers, but still depend on the outlier's frequency
 * Use histograms and other visualizations to better understand outliers
+
+## 2.9 Monitoring
+System performance monitoring shows performance statistics over time: *time series*.
+
+Many use-cases for monitoring:
+* Compare current performance from the past
+* Identify usage patterns
+* Capacity planning
+* Quantify growth
+* Show peak usage
+
+### Time-based Patterns
+* Can view usage/activity on a hourly, daily, weekly, quarterly and yearly basis, to identify patterns
+    * Ex. p78, file system read usage has a pattern of being more active during the workday (9am-5pm), quieter on weekends
+* Can also identify irregular increases in activities affecting peaks (ex. release of a new feature, online shopping sale/holidays)
+* Irregular decrease in load could be: internet outages, sports files (people are not using your product)
+
+### Monitoring Products
