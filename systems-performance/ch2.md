@@ -988,9 +988,34 @@ Relevant to performance:
 
 #### Harmonic Mean
 The **harmonic mean** is the count of values divided by the sum of the values' reciprocals
-* Used when comparing rates
+* Used when comparing rates (ex. transfer rates of data)
 
 With n values, the harmonic mean is:
 ```
 n / (1/x1 + 1/x2 + ... 1/xn)
 ```
+
+Example:
+* Calculate the average transfer rate of 800MB of data
+    * 100MB of data will be sent at 50MB/s
+    * The remaining 700MB will be sent at a throttled rate of 10MB/s
+    ```
+    800 / (100/50 + 700/10) ~= 11.1 MB/s
+    ```
+
+#### Averages over Time
+* Many performance metrics are averages over time
+    * Ex. a CPU is never really "at 50% utilization", that utilization value was the average across a time interval
+* Important to look at different intervals when looking at averages
+    * Ex. 5-minute averages could mask workload peaks that lasted for a few seconds at a time
+
+
+#### Decayed Average
+A **decayed average** weighs values more recently in time higher than values in the past
+* Reduces the short-term fluctuations in the average
+* Some system performance tools use the decayed average to compute average load (ex. `uptime`)
+
+
+#### Limitations
+* Averages are a *summary* statistic - details are lost/hidden
+* Can use other metrics in addition to average to get a better understanding of the system's performance (ex. standard deviation, percentiles, medians, visualizations)
