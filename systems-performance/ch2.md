@@ -1084,3 +1084,48 @@ Cloud computing systems require monitoring hundreds+ components
 
 ### Summary-since-boot
 Operating system also have tools to view the statistics of the system since the last boot (ex. `systemd-analyze`)
+
+
+## 2.10 Visualizations
+* Visualizations enable pattern recognition and display data that is difficult to understand quickly as text
+* Identify correlations
+
+### Line Chart
+Line charts and line graphs can show metrics over time (ex. average disk I/O latency)
+* Multiple lines can also be plotted to compare other related data (ex. different disks)
+    * Can also graph statistical values in a line chart (ex. median, standard deviation, and percentiles), see p81
+
+### Scatter Plots
+* For a reasonable amount of points, can help spot outliers in the data
+* Hard to understand with many points (ex. on a cloud computing cluster of 200k instances), the points become a "wall of paint"
+
+### Heat Maps
+Heat maps, also called *column quantization*, address the scalability problem of scatter plots
+* *Quantizes* the x and y ranges into *buckets*
+* Can see the type of distribution (ex. bi-modal)
+* The author invented heat maps for latency/utilization in 2008 in Analytics for Sun Microsystems ZFS Storage
+* Can plot latency, utilization, and subsecond offsets as heat maps, see [the author's webpage on heat maps](https://www.brendangregg.com/heatmaps.html)
+
+More on [subsecond offset heatmaps](https://www.brendangregg.com/HeatMaps/subsecondoffset.html)
+* Time on two axes: x-axis in seconds and y-axis as *time within a second*
+* The z-axis is the color, darker = more data samples that fit in the bucket
+
+
+### Timeline Charts
+A *timeline chart* shows duration of events as bars on a timeline
+* Also called *waterfall charts*
+* Ex. show the timings within a network request in Firefox browser
+
+![Timeline chart in network activity in Firefox](images/timeline-chart-firefox.png)
+
+* A *Gantt chart* shows the dependencies of events
+* Backend performance analysis tools use timeline charts to show time lines of threads or CPUs (ex. KernelShark, Trace Compass)
+
+### Surface Plots
+A *surface plot* represents data as a 3D surface, typcically as a wireframe
+* Ex. row as a CPU in a server, hills indicate high CPU utilization, plot all 16 CPUs on this 3D surface (p85)
+
+### Visualization Tools
+* Quick text-based CLI tools
+* Web-based visualization tools like Grafana
+* Important that access to these metrics is quick, especially for urgent performance incidents
