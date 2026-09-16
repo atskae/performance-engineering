@@ -1070,3 +1070,17 @@ Many use-cases for monitoring:
 * Irregular decrease in load could be: internet outages, sports files (people are not using your product)
 
 ### Monitoring Products
+Many software products for system software monitoring with features:
+* Store long-term data
+* Browser-based UI, interactive graphs
+* Configurable alerts
+
+Some products allow running *agents* (also called *exporters*) that run on the system itself to gather metrics
+* Different agents can collect statistics from different sources: web servers, language runtimes, databases, OS libaries, kernel interfaces
+
+Cloud computing systems require monitoring hundreds+ components
+* Centralized monitoring system is useful
+* Example: Netflix's Atlas cloud-wide monitoring tool to monitor 200,000 instances
+
+### Summary-since-boot
+Operating system also have tools to view the statistics of the system since the last boot (ex. `systemd-analyze`)
